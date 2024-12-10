@@ -11,7 +11,7 @@ class AuthController extends Controller
     public function authenticate(Request $request) {
         try {
             $secret = $request->input("secret");
-            $validSecret = env("SECRET_KEY");
+            $validSecret = config('auth.secret_key');
             if ($secret !== $validSecret) {
                 return response()->json(["error" => "Unauthorized"], 401);
             }

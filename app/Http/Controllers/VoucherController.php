@@ -11,7 +11,7 @@ class VoucherController extends Controller
     public function getVoucher(Request $request) {
         $bearerToken = $request->bearerToken();
         $token = Token::where("token", $bearerToken)->first();
-        if (!$token) {
+        if (!$token || $token->used === true) {
             return response()->json(["error" => "Unauthorized"], 401);
         }
 
@@ -27,6 +27,12 @@ class VoucherController extends Controller
         if (!$voucher) {
             return response()->json(["error" => "Voucher not available"], 422);
         }
+
+        $voucher->used = true;
+        $voucher->save();
+
+        $token->used = true;
+        $token->save();
 
         return response()->json([
             'voucher_number' => $voucher->voucher_number,

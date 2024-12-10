@@ -2,6 +2,8 @@
 
 return [
 
+    'secret_key' => env('SECRET_KEY', 'top-secret-code'),
+
     /*
     |--------------------------------------------------------------------------
     | Authentication Defaults
