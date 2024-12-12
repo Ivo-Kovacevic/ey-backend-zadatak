@@ -3,25 +3,33 @@
 namespace App\Http\Controllers;
 
 use App\Models\Token;
+use App\Services\AuthService;
 use Exception;
 use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
-    public function authenticate(Request $request) {
+    protected $authService;
+
+    public function __construct(AuthService $authService)
+    {
+        $this->authService = $authService;
+    }
+
+    public function authenticate(Request $request)
+    {
         try {
             $secret = $request->input("secret");
-            $validSecret = config('auth.secret_key');
-            if ($secret !== $validSecret) {
+
+            if (!$this->authService->validateSecret($secret)) {
                 return response()->json(["error" => "Unauthorized"], 401);
             }
-    
-            $newToken = uniqid("token_", true);
-            $token = Token::create(["token" => $newToken]);
-    
+
+            $token = $this->authService->generateToken();
+
             return response()->json(["token" => $token->token], 200);
         } catch (Exception $e) {
-            return response()->json(["message" => "Error creating token", "error" => $e->getMessage()], 500);
+            return response()->json(["error" => "Error creating token"], 500);
         }
     }
 }
