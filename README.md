@@ -59,6 +59,12 @@ php artisan migrate
 php artisan db:seed
 ```
 
+or alternatively import `ey_backend.sql` file from this database folder by connecting to `ey_backend` and running:
+
+```
+source /path/to/ey_backend.sql
+```
+
 7. Start API with:
 
 ```
